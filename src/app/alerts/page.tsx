@@ -8,7 +8,7 @@ export default async function AlertsPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/login')
+    redirect('/')
   }
 
   const { data: alerts } = await supabase

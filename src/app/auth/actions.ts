@@ -15,7 +15,7 @@ export async function signInWithGoogle() {
 
   if (error) {
     console.error('Auth error:', error.message)
-    return redirect('/login?error=Could not authenticate')
+    return redirect('/?error=Could not authenticate')
   }
 
   if (data.url) {
@@ -44,5 +44,5 @@ export async function signInWithEmail(email: string) {
 export async function signOut() {
   const supabase = await createClient()
   await supabase.auth.signOut()
-  redirect('/login')
+  redirect('/')
 }

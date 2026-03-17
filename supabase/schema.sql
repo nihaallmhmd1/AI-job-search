@@ -57,12 +57,29 @@ CREATE TABLE IF NOT EXISTS public.job_alerts (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- User Job Preferences table
+CREATE TABLE IF NOT EXISTS public.user_job_preferences (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users ON DELETE CASCADE NOT NULL,
+  job_functions TEXT[],
+  job_types TEXT[],
+  work_mode TEXT DEFAULT 'Any',
+  location TEXT,
+  experience_level TEXT,
+  salary_range TEXT,
+  skills TEXT[],
+  notifications_enabled BOOLEAN DEFAULT false,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  UNIQUE(user_id)
+);
+
 -- Enable Row Level Security
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.resumes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.jobs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.saved_jobs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.job_alerts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_job_preferences ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
 CREATE POLICY "Public profiles are viewable by everyone." ON public.profiles FOR SELECT USING (true);
@@ -76,3 +93,5 @@ CREATE POLICY "Jobs are viewable by logged in users." ON public.jobs FOR SELECT 
 CREATE POLICY "Users can manage own saved jobs." ON public.saved_jobs FOR ALL USING (auth.uid() = user_id);
 
 CREATE POLICY "Users can manage own job alerts." ON public.job_alerts FOR ALL USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can manage own preferences." ON public.user_job_preferences FOR ALL USING (auth.uid() = user_id);

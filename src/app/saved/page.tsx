@@ -9,7 +9,7 @@ export default async function SavedJobsPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/login')
+    redirect('/')
   }
 
   const { data: savedJobs } = await supabase
