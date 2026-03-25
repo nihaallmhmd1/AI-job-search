@@ -7,7 +7,7 @@ export default async function ResumePage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/')
+    redirect('/login')
   }
 
   return <ResumeUploadUI user={user} />

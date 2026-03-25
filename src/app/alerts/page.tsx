@@ -8,7 +8,7 @@ export default async function AlertsPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/')
+    redirect('/login')
   }
 
   const { data: alerts } = await supabase
@@ -49,7 +49,7 @@ export default async function AlertsPage() {
                 </p>
                 <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
                    <Mail className="w-4 h-4 text-gray-400" />
-                   <span className="text-[11px] font-bold text-gray-700">{user.email}</span>
+                   <span className="text-[11px] font-bold text-gray-700">{user.email || 'User'}</span>
                    <span className="ml-auto badge bg-white border border-gray-200 text-gray-400">Verified</span>
                 </div>
              </div>

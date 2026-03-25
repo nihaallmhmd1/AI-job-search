@@ -9,7 +9,7 @@ export default async function SavedJobsPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/')
+    redirect('/login')
   }
 
   const { data: savedJobs } = await supabase
@@ -53,7 +53,7 @@ export default async function SavedJobsPage() {
             <Bookmark className="w-16 h-16 text-gray-200 mx-auto mb-6" />
             <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">No saved jobs found</p>
             <p className="text-gray-400 text-[10px] mt-2 mb-8 uppercase px-10">Bookmark jobs from the dashboard to keep track of your career progress.</p>
-            <a href="/dashboard" className="btn-secondary mx-auto w-fit">Browse Jobs</a>
+            <a href="/dashboard" className="w-fit mx-auto px-6 py-3 bg-gray-900 text-white text-xs font-bold rounded-xl hover:bg-gray-800 transition-all">Browse Jobs</a>
           </div>
         )}
       </main>

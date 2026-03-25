@@ -6,7 +6,6 @@ import { revalidatePath } from 'next/cache'
 export async function getUserPreferences() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-
   if (!user) return null
 
   const { data, error } = await supabase
@@ -26,26 +25,45 @@ export async function getUserPreferences() {
 export async function saveUserPreferences(preferences: any) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-
   if (!user) throw new Error('Unauthorized')
 
-  const { data, error } = await supabase
+  const { data: existing } = await supabase
     .from('user_job_preferences')
-    .upsert({
-      user_id: user.id,
-      ...preferences,
-      updated_at: new Date().toISOString()
-    }, { onConflict: 'user_id' })
-    .select()
-    .single()
+    .select('id')
+    .eq('user_id', user.id)
+    .maybeSingle()
 
-  if (error) {
-    console.error('Error saving preferences', error)
-    throw new Error('Failed to save preferences')
+  let result
+  if (existing) {
+    const { data, error } = await supabase
+      .from('user_job_preferences')
+      .update({
+        ...preferences,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', existing.id)
+      .select()
+      .single()
+    
+    if (error) throw error
+    result = data
+  } else {
+    const { data, error } = await supabase
+      .from('user_job_preferences')
+      .insert({
+        user_id: user.id,
+        ...preferences,
+        updated_at: new Date().toISOString()
+      })
+      .select()
+      .single()
+      
+    if (error) throw error
+    result = data
   }
 
   revalidatePath('/dashboard')
   revalidatePath('/')
 
-  return data
+  return result
 }

@@ -6,14 +6,13 @@ import { revalidatePath } from 'next/cache'
 export async function toggleSaveJob(jobId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-
   if (!user) throw new Error('Unauthorized')
 
   const { data: existing } = await supabase
     .from('saved_jobs')
     .select('id')
-    .eq('user_id', user.id)
     .eq('job_id', jobId)
+    .eq('user_id', user.id)
     .single()
 
   if (existing) {
@@ -38,14 +37,13 @@ export async function toggleSaveJob(jobId: string) {
 export async function updateJobStatus(jobId: string, status: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-
   if (!user) throw new Error('Unauthorized')
 
   const { error } = await supabase
     .from('saved_jobs')
     .update({ status })
-    .eq('user_id', user.id)
     .eq('job_id', jobId)
+    .eq('user_id', user.id)
 
   if (error) throw error
   revalidatePath('/saved')

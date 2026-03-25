@@ -124,7 +124,7 @@ async function analyzeResume(resumeText: string, fileName: string) {
 
     if (error) {
        console.error('Supabase Insert Error:', error)
-       throw new Error('Failed to save analysis to database')
+       throw new Error(`Failed to save analysis to database: ${error.message} - ${error.details || ''}`)
     }
 
     return analysis
@@ -151,6 +151,7 @@ export async function getJobRecommendations() {
     .from('user_job_preferences')
     .select('*')
     .eq('user_id', user.id)
+    .limit(1)
     .maybeSingle()
 
   if (!resume && !prefs) return []

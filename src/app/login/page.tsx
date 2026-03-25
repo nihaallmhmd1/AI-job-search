@@ -1,112 +1,94 @@
-'use client'
-
-import { useState } from 'react'
-import { signInWithGoogle, signInWithEmail } from '@/app/auth/actions'
-import { Briefcase, Chrome, Mail, ArrowRight, Zap } from 'lucide-react'
-import { toast } from 'react-hot-toast'
+import { AuthButton } from '@/components/AuthButton'
+import { Briefcase, Sparkles, Shield, ArrowRight } from 'lucide-react'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [isEmailSent, setIsEmailSent] = useState(false)
-
-  const handleEmailSignIn = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
-
-    setIsLoading(true)
-    try {
-      await signInWithEmail(email)
-      setIsEmailSent(true)
-      toast.success('Check your email for the login link!')
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to send login link')
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return (
-    <div className="min-h-screen bg-[#FDFDFD] flex flex-col items-center justify-center px-6 py-12">
-      <div className="flex items-center gap-2 mb-12">
-        <div className="w-10 h-10 bg-gray-900 rounded-xl flex items-center justify-center">
-          <Briefcase className="w-5 h-5 text-white" />
-        </div>
-        <span className="text-xl font-bold text-gray-900 tracking-tight">AI Job Search</span>
-      </div>
-
-      <div className="w-full max-w-sm bg-white rounded-[40px] border border-gray-100 shadow-2xl shadow-gray-100/50 p-10">
-        <div className="mb-8 text-center">
-          <h2 className="text-xl font-bold text-gray-900 mb-1">Welcome Back</h2>
-          <p className="text-xs text-gray-400 font-medium">Login to access your job search dashboard.</p>
-        </div>
-
-        {!isEmailSent ? (
-          <div className="space-y-6">
-            <button 
-              onClick={() => signInWithGoogle()}
-              className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white border border-gray-200 rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all font-bold text-gray-700 shadow-sm active:scale-95"
-            >
-              <Chrome className="w-5 h-5 text-blue-500" />
-              <span className="text-xs uppercase tracking-tight">Sign in with Google</span>
-            </button>
-
-            <div className="relative flex items-center gap-4 py-2">
-              <div className="flex-1 h-px bg-gray-50"></div>
-              <span className="text-[10px] text-gray-300 font-bold uppercase tracking-widest">OR</span>
-              <div className="flex-1 h-px bg-gray-50"></div>
+    <div className="min-h-screen bg-[#f8f9fa] flex flex-col items-center justify-center p-4">
+      <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center animate-in fade-in slide-in-from-bottom-8 duration-700">
+        
+        {/* Left Side: Branding & Features */}
+        <div className="space-y-8">
+          <div className="flex flex-col items-start gap-4 text-left">
+            <div className="bg-blue-600 p-3 rounded-2xl shadow-lg shadow-blue-200">
+              <Briefcase className="w-8 h-8 text-white" />
             </div>
-
-            <form onSubmit={handleEmailSignIn} className="space-y-4">
-              <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-gray-900 transition-colors" />
-                <input 
-                  type="email" 
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com" 
-                  className="w-full pl-12 pr-4 py-4 bg-gray-50 border-none rounded-2xl text-xs font-medium focus:ring-2 focus:ring-gray-900 transition-all outline-none"
-                />
-              </div>
-              <button 
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-4 bg-gray-900 text-white text-xs font-bold rounded-2xl hover:bg-gray-800 disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-lg shadow-gray-200"
-              >
-                {isLoading ? (
-                  <Zap className="w-4 h-4 animate-pulse" />
-                ) : (
-                  <>
-                    <span className="uppercase tracking-widest">Continue</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
-        ) : (
-          <div className="py-8 text-center animate-in zoom-in-95 duration-300">
-            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <Mail className="w-8 h-8 text-blue-500" />
-            </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Check your inbox</h3>
-            <p className="text-xs text-gray-400 leading-relaxed mb-8">
-              We've sent a magic link to <span className="text-gray-900 font-bold">{email}</span>. Click it to login instantly.
+            <h1 className="text-5xl font-bold text-gray-900 tracking-tight leading-tight">
+              AI Job Search <br /> 
+              <span className="text-blue-600">Career Amplified.</span>
+            </h1>
+            <p className="text-gray-500 text-xl max-w-sm">
+              The minimal workspace where AI helps you discover, match, and secure your perfect role.
             </p>
-            <button 
-              onClick={() => setIsEmailSent(false)}
-              className="text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors"
-            >
-              Use a different email
-            </button>
           </div>
-        )}
+
+          <div className="space-y-4">
+            <div className="flex items-center gap-4 group cursor-default">
+              <div className="bg-white p-2.5 rounded-xl shadow-sm border border-gray-100 group-hover:bg-blue-50 transition-colors">
+                <Sparkles className="w-5 h-5 text-blue-600" />
+              </div>
+              <p className="text-gray-700 font-medium tracking-wide">Intelligent Resume Matching</p>
+            </div>
+            <div className="flex items-center gap-4 group cursor-default">
+              <div className="bg-white p-2.5 rounded-xl shadow-sm border border-gray-100 group-hover:bg-blue-50 transition-colors">
+                <Shield className="w-5 h-5 text-blue-600" />
+              </div>
+              <p className="text-gray-700 font-medium tracking-wide">Private & Organized Application Tracking</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side: Auth Card */}
+        <div className="bg-white p-10 rounded-[2.5rem] shadow-xl shadow-gray-200/50 border border-gray-50 flex flex-col gap-8 relative overflow-hidden backdrop-blur-sm">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-bl-full -z-10 opacity-50" />
+          
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold text-gray-900">Get Started</h2>
+            <p className="text-gray-500 text-sm">Experience the future of the job search today.</p>
+          </div>
+
+          <div className="space-y-4">
+            <AuthButton 
+              label="Continue with Google" 
+              className="w-full justify-center text-lg py-4 border-2 hover:border-blue-200" 
+            />
+            
+            <div className="relative flex py-3 items-center">
+              <div className="flex-grow border-t border-gray-100"></div>
+              <span className="flex-shrink mx-4 text-gray-300 text-xs font-bold uppercase tracking-widest">or</span>
+              <div className="flex-grow border-t border-gray-100"></div>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <div className="text-center">
+                <p className="text-sm text-gray-500">
+                  New here? <span className="text-blue-600 font-semibold cursor-pointer hover:underline">Create an account</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-6 border-t border-gray-50 flex items-center justify-between">
+            <div className="flex -space-x-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-gray-100 overflow-hidden">
+                  <img src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="user" />
+                </div>
+              ))}
+            </div>
+            <p className="text-[10px] text-gray-400 font-medium tracking-wide uppercase italic">
+              Joined by 2,000+ candidates
+            </p>
+          </div>
+        </div>
+
       </div>
       
-      <p className="mt-12 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-        © 2026 AI Job Search. All rights reserved.
-      </p>
+      {/* Footer */}
+      <footer className="mt-20 text-gray-400 text-sm flex gap-8 font-medium">
+        <a href="#" className="hover:text-blue-600 transition-colors">Privacy</a>
+        <a href="#" className="hover:text-blue-600 transition-colors">Terms</a>
+        <a href="#" className="hover:text-blue-600 transition-colors">Contact</a>
+      </footer>
     </div>
   )
 }

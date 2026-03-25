@@ -1,9 +1,11 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function updateSession(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
-    request,
+    request: {
+      headers: request.headers,
+    },
   })
 
   const supabase = createServerClient(
@@ -16,9 +18,7 @@ export async function updateSession(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({
-            request,
-          })
+          supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           )
@@ -27,29 +27,25 @@ export async function updateSession(request: NextRequest) {
     }
   )
 
-  if (!supabase) return supabaseResponse
-
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Redirection Logic
-  const isAuthPage = request.nextUrl.pathname === '/' || request.nextUrl.pathname === '/login'
-  const isProtectedRoute = ['/dashboard', '/resume', '/saved', '/alerts'].some(path => 
-    request.nextUrl.pathname.startsWith(path)
-  )
+  const isAuthPage = request.nextUrl.pathname === '/login'
 
-  if (user && isAuthPage) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+  // If not logged in and not on root or login page, redirect to login
+  if (!user && !isAuthPage && request.nextUrl.pathname !== '/') {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
   }
 
-  if (!user && isProtectedRoute) {
-    return NextResponse.redirect(new URL('/', request.url))
+  // If logged in and trying to go to login or root, redirect to dashboard
+  if (user && (isAuthPage || request.nextUrl.pathname === '/')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/dashboard'
+    return NextResponse.redirect(url)
   }
 
   return supabaseResponse
-}
-
-export async function proxy(request: NextRequest) {
-  return await updateSession(request)
 }
 
 export const config = {

@@ -2,10 +2,10 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Briefcase, Search, Upload, Bookmark, Bell, User, LogOut } from 'lucide-react'
+import { Briefcase, Search, Upload, Bookmark, Bell, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { signOut } from '@/app/auth/actions'
 import { NotificationCenter } from './NotificationCenter'
+import { AuthButton } from './AuthButton'
 
 const navItems = [
   { name: 'Browse', href: '/dashboard', icon: Search },
@@ -14,7 +14,7 @@ const navItems = [
   { name: 'Saved', href: '/saved', icon: Bookmark },
 ]
 
-export function Navbar({ user }: { user: any }) {
+export function Navbar({ user }: { user?: any }) {
   const pathname = usePathname()
 
   return (
@@ -47,31 +47,27 @@ export function Navbar({ user }: { user: any }) {
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-xl border border-gray-100">
-          <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
-            {user?.user_metadata?.avatar_url ? (
-              <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-            ) : (
-              <User className="w-3 h-3 text-gray-500" />
-            )}
+        {user && (
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-xl border border-gray-100">
+            <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+              {user.user_metadata?.avatar_url ? (
+                <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <User className="w-3 h-3 text-gray-500" />
+              )}
+            </div>
+            <div className="hidden sm:block">
+              <p className="text-[10px] font-bold text-gray-900 leading-none truncate max-w-[80px]">
+                {user.user_metadata?.full_name || 'User'}
+              </p>
+            </div>
           </div>
-          <div className="hidden sm:block">
-            <p className="text-[10px] font-bold text-gray-900 leading-none truncate max-w-[80px]">
-              {user?.user_metadata?.full_name || 'User'}
-            </p>
-          </div>
-        </div>
-        
+        )}
         <NotificationCenter />
-
-        <button 
-          onClick={() => signOut()}
-          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-          title="Sign Out"
-        >
-          <LogOut className="w-4 h-4" />
-        </button>
+        
+        {user && <AuthButton user={user} />}
       </div>
     </nav>
   )
 }
+
