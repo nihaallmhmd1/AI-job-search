@@ -1,0 +1,16 @@
+# Resume: Nihaal Mohammad
+Email: nihaal@example.com
+Role: Full Stack Developer
+
+## Skills
+- React, Next.js, TypeScript
+- Tailwind CSS, Node.js
+- PostgreSQL, Supabase
+- Generative AI, LLMs
+
+## Experience
+- Senior Software Engineer at Tech Solutions (2 years)
+- Junior Developer at StartUp Inc (1 year)
+
+## Summary
+Passionate developer with experience in building AI-powered web applications.
